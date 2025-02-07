@@ -1,4 +1,10 @@
 
+﻿/*
+libScePad
+Copyright by Sony Computer Entertainment
+Header by github/MasonLeeBack
+*/
+
 #ifndef _LIBSCEPAD_H_
 #define _LIBSCEPAD_H_
 
