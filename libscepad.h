@@ -1,12 +1,3 @@
-/*
-
-libScePad
-
-Copyright by Sony Computer Entertainment
-Header by github/MasonLeeBack
-
-*/
-
 
 #ifndef _LIBSCEPAD_H_
 #define _LIBSCEPAD_H_
@@ -16,6 +7,7 @@ Header by github/MasonLeeBack
 #if !defined(_WIN32) || !defined(_WIN64)
 #error This library is only compatible with Windows 64-bit systems.
 #endif
+#include <wtypes.h>
 
 #ifndef _SCE_PAD_TRIGGER_EFFECT_H
 #define _SCE_PAD_TRIGGER_EFFECT_H
@@ -265,8 +257,8 @@ struct s_ScePadExtensionUnitData {
 };
 
 struct s_ScePadVibrationParam {
-    uint8_t largeMotor;
-    uint8_t smallMotor;
+	uint8_t largeMotor;
+	uint8_t smallMotor;
 };
 
 struct s_ScePadVolumeGain {
@@ -278,24 +270,29 @@ struct s_ScePadVolumeGain {
 
 #pragma pack(push, 1) 
 struct s_ScePadContainerIdInfo {
-    DWORD size;              
-    wchar_t id[0x2000];  
+	int size;              
+	wchar_t id[0x2000];  
 };
 #pragma pack(pop)
 
 struct s_ScePadInfo {
-    float batteryLevel; 
-    WORD touchpadWidth;       
-    WORD touchpadHeight; 
-    BYTE flag1;         
-    BYTE flag2;          
-    BYTE state;         
-    BYTE isValid; 
+	float batteryLevel; 
+	int touchpadWidth;       
+	int touchpadHeight; 
+	uint8_t flag1;         
+	uint8_t flag2;          
+	uint8_t state;         
+	uint8_t isValid; 
 };
 
-// TODO: Things to be figured out later
-//      Offsets for the gyroscope, touchpad, etc.
-// 120 bytes
+typedef struct {
+	uint32_t ExtensionUnitId;
+	uint8_t Reserve;
+	uint8_t DataLen;
+	uint8_t Data[10];
+} s_ScePadExtUnitData;
+
+
 typedef struct {
 	uint32_t bitmask_buttons;
 	s_SceStickData LeftStick;
@@ -308,7 +305,12 @@ typedef struct {
 	s_SceFVector3 angularVelocity;
 	s_ScePadTouchData touchData;
 	bool connected;
-	uint64_t timeStamp;
+	uint64_t timestamp;
+	s_ScePadExtUnitData extUnitData;
+	uint8_t connectionCount;
+	uint8_t reserved[2];
+	uint8_t deviceUniqueDataLen;
+	uint8_t deviceUniqueData[12];
 
 } s_ScePadData;
 
@@ -336,7 +338,7 @@ int scePadIsControllerUpdateRequired(int handle);
 int scePadIsSupportedAudioFunction(int handle);
 int scePadOpen(int userID, int, int, void*);
 int scePadRead(int handle, void* data, int count);
-int scePadReadState(int handle, s_ScePadData* data);
+int scePadReadState(int handle, void* data);
 int scePadResetLightBar(int handle);
 int scePadResetOrientation(int handle);
 int scePadSetAngularVelocityDeadbandState(int handle, bool state);
